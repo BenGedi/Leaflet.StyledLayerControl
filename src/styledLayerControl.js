@@ -1,6 +1,6 @@
-require('material-design-lite/material.min.css');
+'use strict';
+
 require('material-design-lite/material.min.js');
-require('../css/MaterialIcons.css');
 
 L.Control.StyledLayerControl = L.Control.Layers.extend({
     options: {
@@ -19,8 +19,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     initialize: function(baseLayers, groupedOverlays, options) {
-        var i,
-            j;
+        // var i,
+        //     j;
         L.Util.setOptions(this, options);
 
         // if(!document.getElementById('material-min-css')) {
@@ -44,13 +44,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._groupList = [];
         this._domGroups = [];
 
-        for (i in baseLayers) {
+        for (var i in baseLayers) {
             for (var j in baseLayers[i].layers) {
                 this._addLayer(baseLayers[i].layers[j], j, baseLayers[i], false);
             }
         }
 
-        for (i in groupedOverlays) {
+        for (var i in groupedOverlays) {
             for (var j in groupedOverlays[i].layers) {
                 this._addLayer(groupedOverlays[i].layers[j], j, groupedOverlays[i], true);
             }
@@ -103,7 +103,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     removeGroup: function(group_Name, del) {
         for (group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
-                for (layer in this._layerControlInputs) {
+                for (var layer in this._layerControlInputs) {
                     if (this._layerControlInputs[layer].group && this._layerControlInputs[layer].group.name == group_Name) {
                         if (del) {
                             this._map.removeLayer(this._layerControlInputs[layer].layer);
@@ -119,8 +119,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     removeAllGroups: function(del) {
-        for (group in this._groupList) {
-                for (layer in this._layerControlInputs) {
+        for (var group in this._groupList) {
+                for (var layer in this._layerControlInputs) {
                     if (this._layerControlInputs[layer].group && this._layerControlInputs[layer].group.removable) {
                         if (del) {
                             this._map.removeLayer(this._layerControlInputs[layer].layer);
@@ -152,9 +152,9 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     changeGroup: function(group_Name, select) {
-        for (group in this._groupList) {
+        for (var group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
-                for (layer in this._layerControlInputs) {
+                for (var layer in this._layerControlInputs) {
                     if (this._layerControlInputs[layer].group && this._layerControlInputs[layer].group.name == group_Name) {
                         if (select) {
                             this._map.addLayer(this._layerControlInputs[layer].layer);
@@ -262,7 +262,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         container.appendChild(section);
 
         // process options of ac-container css class - to options.container_width and options.container_maxHeight
-        for (var c = 0; c < (containers = container.getElementsByClassName('ac-container')).length; c++) {
+        var containers = container.getElementsByClassName('ac-container') || 0;
+        for (var c = 0; c < containers.length; c++) {
             if (this.options.container_width) {
                 containers[c].style.width = this.options.container_width;
             }
@@ -270,7 +271,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // set the max-height of control to y value of map object
             this._default_maxHeight = this.options.container_maxHeight ? this.options.container_maxHeight : (this._map.getSize().y - 70);
             containers[c].style.maxHeight = this._default_maxHeight + "px";
-
         }
 
         window.onresize = this._on_resize_window.bind(this);
@@ -278,6 +278,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     _on_resize_window: function() {
+        var containers = document.getElementsByClassName('ac-container') || 0;
         // listen to resize of screen to reajust de maxHeight of container
         for (var c = 0; c < containers.length; c++) {
             // input the new value to height
@@ -311,7 +312,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
             // if not find the group search for the name
             if (groupId === -1) {
-                for (g in this._groupList) {
+                for (var g in this._groupList) {
                     if (this._groupList[g].groupName == group.groupName) {
                         groupId = g;
                         break;
@@ -391,7 +392,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         if(!this._map) return ;
         var currentZoom = this._map.getZoom();
 
-        for (layerId in this._layerControlInputs) {
+        for (var layerId in this._layerControlInputs) {
             if (this._layerControlInputs[layerId].layer.options && (this._layerControlInputs[layerId].layer.options.minZoom || this._layerControlInputs[layerId].layer.options.maxZoom)) {
                 var el = document.getElementById('ac_layer_input_' + this._layerControlInputs[layerId].layer._leaflet_id);
                 if (currentZoom < this._layerControlInputs[layerId].layer.options.minZoom || currentZoom > this._layerControlInputs[layerId].layer.options.maxZoom) {
@@ -496,10 +497,10 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // verify if type is exclusive
             var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
 
-            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-1" class="menu" ' + s_expanded + s_type_exclusive + '/>';
-            inputLabel = '<label for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
+            var inputElement = '<input id="ac' + obj.group.id + '" name="accordion-1" class="menu" ' + s_expanded + s_type_exclusive + '/>';
+            var inputLabel = '<label for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
 
-            article = document.createElement('article');
+            var article = document.createElement('article');
             article.className = 'ac-large';
             article.appendChild(label);
 
@@ -624,7 +625,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
     _onDeleteClick: function(obj) {
         var node = obj.target.parentElement.childNodes[0];
-        n_obj = this._layerControlInputs[node.layerId];
+        var n_obj = this._layerControlInputs[node.layerId];
 
         // verify if obj is a basemap and checked to not remove
         if (!n_obj.overlay && node.checked) {
